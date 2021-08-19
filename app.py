@@ -11,6 +11,18 @@ app.config.from_object(__name__)
 def conectar_bd():
     return sqlite3.connect(app.config['DATABASE'])
 
-@app.route('/hello')
+@app.before_request #Antes da requisição
+def antes_requisicao():
+    g.bd = conectar_bd() #Deixa o bd globalmente com a variável g do flask
+
+@app.teardown_request #Depois da requisição
+def depois_request(exc):
+    g.bd.close() #Fecha a conexão
+
+@app.route('/') 
+def exibir_entradas():
+    return "Aqui estarão as postagens!!"
+
+@app.route('/hello') #Rota inicial url
 def pagina_inicial():
     return "Hello World"
