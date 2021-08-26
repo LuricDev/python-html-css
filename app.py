@@ -20,10 +20,20 @@ def depois_request(exc):
     g.bd.close() #Fecha a conexão
 
 @app.route('/') 
-@app.route('/entradas')
+@app.route('/entradas') #Rota que mostra os posts
 def exibir_entradas():
-    return render_template('exibir_entradas.html')
+    sql = "SELECT titulo, texto FROM entradas ORDER BY id DESC" #Pega o titulo e texto da tabela entradas em ordem decrescente
+    cur = g.bd.execute(sql) #executando o sql e armazenando na variável cur
+    entradas = [] #Lista que vai armazenar o resultado que retornou da tabela
+    for titulo, texto in cur.fetchall(): #fetchall traz todos os resultados com o titulo e texto
+        entradas.append({'titulo': titulo, 'texto': texto}) #Dicionario do python com o titulo e texto
+    return render_template('exibir_entradas.html', entradas=entradas)
 
-@app.route('/hello') #Rota inicial url
-def pagina_inicial():
-    return "Hello World"
+@app.route('/inserir') #Rota para inserir posts
+def inserir_entrada():
+    if not session.get('logado'):
+        abort(401)
+    sql = "INSERT INTO entradas(titulo, texto) VALUES (?,?)"
+    g.bd.execute(sql, request.form['campoTitulo', request.form['campoTexto']]) #Enviando os valores pegando direto do formulário
+    g.bd.commit() #Se tiver tudo certo com a inserção, salvar no banco de dados
+    return redirect('/entradas') #Redirecionando para a página entradas
