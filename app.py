@@ -34,7 +34,7 @@ def inserir_entrada():
     if not session.get('logado'):
         abort(401)
     sql = "INSERT INTO entradas(titulo, texto) VALUES (?,?)"
-    g.bd.execute(sql, request.form['campoTitulo', request.form['campoTexto']]) #Enviando os valores pegando direto do formulário
+    g.bd.execute(sql, (request.form['campoTitulo'], request.form['campoTexto'])) #Enviando os valores pegando direto do formulário
     g.bd.commit() #Se tiver tudo certo com a inserção, salvar no banco de dados
     return redirect(url_for('exibir_entradas')) #Redirecionando para a página entradas
 
