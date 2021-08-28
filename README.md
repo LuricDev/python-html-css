@@ -1,5 +1,6 @@
 Rodando a aplicação:
 pip install -r requirements.txt
+
 flask run
 ngrok ngrok http 500 - Caso esteja rodando no gitpod.io, para correção de rota.
 
